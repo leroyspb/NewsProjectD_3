@@ -22,8 +22,10 @@ class Product(models.Model):
         validators=[MinValueValidator(0.0)],
     )
 
+    date_create_in = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
-        return f'{self.name.title()}: {self.description[:20]}'
+        return f'{self.name.title()}: {self.description[:20]} {self.price} рублей'
 
 
 # Категория, к которой будет привязываться товар

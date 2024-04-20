@@ -1,0 +1,14 @@
+from simpleapp.models import *
+
+
+Category.objects.create(name="Электроника")
+Category.objects.create(name="Продукты")
+Category.objects.create(name="Вода")
+Category.objects.create(name="Бакалея")
+
+Product.objects.create(name="ЖК Телевизор", quantity=1, price=3500,category_id=1)
+Product.objects.create(name="Хлеб столичный", quantity=1, price=60,category_id=2)
+Product.objects.create(name="Кока-Кола", quantity=1, price=78,category_id=3)
+Product.objects.create(name="Хала с маком", quantity=1, price=38,category_id=4)
+
+

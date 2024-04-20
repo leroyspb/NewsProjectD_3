@@ -1,12 +1,29 @@
 <!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'flatpages/default.html' %}
+{% block content %}
+{% load custom_filters %}
+{% load custom_tags %}
+{% if product %}
+<table width="100%" style="margin-top: 35px">
+    <tr>
+        <td><u> Наименование </u></td>
+        <td><u> Категория </u></td>
+        <td><u> Дата завоза </u></td>
+        <td><u> Количество </u></td>
+        <td><u> Цена </u></td>
+    </tr>
+            <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ product.date_create_in }}</td>
+            <td>{{ product.quantity}}</td>
+            <td>{{ product.price|currency:'rub' }}</td>
+    </tr>
+</table>
 
-<!-- Название у нас будет Product -->
-{% block title %}
-Product
-{% endblock title %}
 
 <!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
-{% block content %}
-<h1>{{ product }}</h1>
+
+
+{% endif %}
 {% endblock content %}
