@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.urls import reverse
 
 
 # Товар для нашей витрины
@@ -25,7 +26,10 @@ class Product(models.Model):
     date_create_in = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.name.title()}: {self.description[:20]} {self.price} рублей'
+        return f'{self.name.title()}: {self.description[:10]}'
+
+    def get_absolute_url(self):
+        return reverse('product_detail', args=[str(self.id)])
 
 
 # Категория, к которой будет привязываться товар
