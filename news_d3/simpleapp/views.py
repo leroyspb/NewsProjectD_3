@@ -23,7 +23,7 @@ class ProductsList(ListView):
     # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'products'
     # ordering = '-date_create_in'
-    paginate_by = 2
+    paginate_by = 5
 
     # Переопределяем функцию получения списка товаров
     def get_queryset(self):
@@ -88,6 +88,26 @@ class ProductDelete(DeleteView):
     success_url = reverse_lazy('product_list')
 
 
+class SearchProduct(ListView):
+
+    # модель товаров
+    model = Product
+    # и новый шаблон, в котором используется форма.
+    template_name = 'search.html'
+    context_object_name = 'products'
+    ordering = '-date_create_in'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = ProductFilter(self.request.GET, queryset)
+        if self.request.GET:
+            return self.filterset.qs
+        return Product.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filterset'] = self.filterset
+        return context
 # def multiply(request):
 #     number = request.GET.get('number')
 #     multiplier = request.GET.get('multiplier')

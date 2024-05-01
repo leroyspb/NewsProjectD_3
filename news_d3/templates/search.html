@@ -1,0 +1,44 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+<!-- Название у нас будет news -->
+{% block title %}
+<h2> Поиск товаров </h2>
+{% endblock title %}
+
+{% block content %}
+<hr>
+{# Добавляем форму, которая объединяет набор полей, которые будут отправляться в запросе #}
+   <form action="" method="get">
+       {# Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями #}
+       {{ filterset.form.as_p }}
+       {# Добавим кнопку отправки данных формы #}
+       <input type="submit" value="Найти" />
+   </form>
+<hr>
+{% if products %}
+<table width="100%" style="margin-top: 35px">
+            <tr>
+                <td><u> Наименование продукта </u></td>
+                <td><u> Дата завоза на склад </u></td>
+                <td><u>  Описание </u></td>
+                <td><u>  Количество </u></td>
+                <td><u>  Цена товара </u></td>
+            </tr>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.date_create_in|date:'d M Y' }}</td>
+                <td>{{ product.description|truncatewords:20 }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.price|currency:'rub' }}</td>
+            {% endfor %}
+            </tr>
+
+        </table>
+{% else %}
+<h3>Выберите параметры для поиска!</h3>
+{% endif %}
+{% endblock content %}
