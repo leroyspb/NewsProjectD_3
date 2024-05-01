@@ -5,6 +5,7 @@ from .models import Product
 
 class ProductForm(forms.ModelForm):
     description = forms.CharField(min_length=20)
+
     class Meta:
         model = Product
         fields = [
@@ -15,7 +16,6 @@ class ProductForm(forms.ModelForm):
             'price',
 
         ]
-
 
     def clean(self):
         cleaned_data = super().clean()
