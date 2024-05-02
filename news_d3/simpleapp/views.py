@@ -1,5 +1,6 @@
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .filters import ProductFilter
@@ -64,7 +65,8 @@ class ProductDetail(DetailView):
     context_object_name = 'product'
 
 
-class ProductCreate(CreateView):
+class ProductCreate(LoginRequiredMixin, CreateView):
+    raise_exception = True
     # Указываем нашу разработанную форму
     form_class = ProductForm
 
