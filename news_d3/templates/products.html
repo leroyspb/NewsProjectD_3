@@ -41,6 +41,10 @@ products
 <!--&lt;!&ndash;       {# Добавим кнопку отправки данных формы #}&ndash;&gt;-->
 <!--       <input type="submit" value="Найти" />-->
 <!--   </form>-->
+    {# Теперь будем проверять не request.user.is_authenticated, а конкретные права #}
+    {% if perms.simpleapp.add_product %}
+    <a href="{% url 'product_create' %}">Добавить товар</a>
+    {% endif %}
 
    {% if products %}
 <table width="100%" style="margin-top: 35px">
@@ -67,6 +71,17 @@ products
                <td>{{ product.category }}</td>
                <td>{{ product.price|currency:'rub' }}</td>
                <td>{{ product.quantity }}</td>
+<!--               <td><a href="{% url 'product_edit' product.id %}">Обновить</a></td>-->
+<!--               <td><a href="{% url 'product_delete' product.id %}">Удалить</a></td>-->
+
+                   <td> {# А здесь доступ для каждой ссылки теперь будем проверять отдельно #}
+                    {% if perms.simpleapp.change_product %}
+                    <a href="{% url 'product_edit' pk=product.id %}">Изменить</a>
+                    {% endif %}
+                    {% if perms.simpleapp.delete_product %}
+                    <a href="{% url 'product_delete' product.id %}">Удалить</a>
+                    {% endif %}
+                </td>
            </tr>
            {% endfor %}
        </table> <!-- ... и таблицы -->

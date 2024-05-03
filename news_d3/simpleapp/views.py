@@ -1,6 +1,6 @@
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .filters import ProductFilter
@@ -65,7 +65,8 @@ class ProductDetail(DetailView):
     context_object_name = 'product'
 
 
-class ProductCreate(LoginRequiredMixin, CreateView):
+class ProductCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('simpleapp.add_product',)
     raise_exception = True
     # Указываем нашу разработанную форму
     form_class = ProductForm
@@ -77,14 +78,16 @@ class ProductCreate(LoginRequiredMixin, CreateView):
 
 
 # Добавляем представление для изменения товара.
-class ProductUpdate(UpdateView):
+class ProductUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('simpleapp.change_product',)
     form_class = ProductForm
     model = Product
     template_name = 'product_edit.html'
 
 
 # Представление удаляющее товар.
-class ProductDelete(DeleteView):
+class ProductDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('simpleapp.delete_product',)
     model = Product
     template_name = 'product_delete.html'
     success_url = reverse_lazy('product_list')
