@@ -17,14 +17,24 @@ logger = logging.getLogger(__name__)
 
 
 def my_job():
-    today = datetime.datetime.now()
-    last_week = today - datetime.timedelta(days=7)
-    products = Product.objects.filter(date_create_in__gte=last_week)
-    categories = products.values_list('subscriptions', flat=True)
-    subscription = Subscription.objects.filter(name__in=categories).values_list('subscription__email', flat=True)
-    print(subscription)
+
+    products = Product.objects.order_by('price')[:3]
+    text = '\n'.join(['{} - {}'.format(p.name, p.price) for p in products])
+    mail_managers("Самые дешевые товары", text)
+
+    # today = datetime.datetime.now()
+    # last_week = today - datetime.timedelta(days=7)
+    # products = Product.objects.filter(date_create_in__gte=last_week)
+    # # <QuerySet [<Product: Хлеб: Хлеб Хлеб >, <Product: Кефир: Кефир Кефи>]>
+    #
+    # categories = list(products.values_list('category__name', flat=True))  # ['Бакалея', 'Молочная продукция']
+    #
+    # subscription =
+    #
+    # # subscription = Subscription.objects.filter(name__in=categories).values_list('subscription__email', flat=True)
+    # print(subscription)
     html_content = render_to_string(
-        "/daily_post.html",
+        "daily_post.html",
         {
             "link": settings.SITE_URL,
             "products": products,
@@ -35,7 +45,7 @@ def my_job():
         subject='Статья за неделю',
         body='',
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to=subscription,
+        to=mail_managers,
     )
 
     msg.attach_alternative(html_content, "text/html")
