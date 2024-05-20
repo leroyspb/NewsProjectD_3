@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(dotenv_path=BASE_DIR/ '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -169,9 +171,14 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 SERVER_EMAIL = os.getenv('SERVER_EMAIL')
 
-ADMINS = os.getenv('ADMINS')
+ADMINS = (
+    ('leroy', 'leroyspb@yandex.ru'),
+)
 
-MANAGERS = os.getenv('MANAGERS')
+MANAGERS = (
+    ('leroyspb', 'leroyspb@yandex.ru'),
+    # ('Petr', 'petr@yandex.ru'),
+)
 
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
