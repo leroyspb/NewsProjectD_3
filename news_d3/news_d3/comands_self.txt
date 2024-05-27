@@ -1,0 +1,5 @@
+cd .\news_d3\
+py manage.py runserver
+cd .\news_d3\
+celery -A news_d3 worker -l INFO --pool=solo
+

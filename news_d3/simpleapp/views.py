@@ -12,8 +12,11 @@ from django.urls import reverse_lazy
 
 from .forms import ProductForm
 from .models import Category, Subscription, Product
-from datetime import datetime
+from datetime import datetime, timedelta
+
 from django.http import HttpResponse
+from django.views import View
+from .tasks import hello, printer
 
 
 class ProductsList(ListView):
@@ -160,3 +163,14 @@ def subscriptions(request):
         'subscriptions.html',
         {'categories': categories_with_subscriptions},
     )
+
+
+class IndexView(View):
+    def get(self, request):
+        printer.apply_async([10], eta=datetime.now() + timedelta(seconds=5))
+        hello.delay()
+        # printer.apply_async([10], countdown = 5)
+        # hello.delay()
+        # printer.delay(10)
+        # hello.delay()
+        return HttpResponse('Hello!')
