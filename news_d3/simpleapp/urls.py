@@ -1,12 +1,12 @@
 from django.urls import path
-
+from .tasks import weekly_send_task
 from . import tasks
 # Импортируем созданные нами представления
 from .views import (ProductsList, ProductDetail, ProductCreate, ProductUpdate, ProductDelete, SearchProduct,
-                    subscriptions, IndexView)
+                    subscriptions)
 
 urlpatterns = [
-   # path — означает путь.
+   # Path — означает путь
    # В данном случае путь ко всем товарам у нас останется пустым.
    # Т.к. наше объявленное представление является классом,
    # а Django ожидает функцию, нам надо представить этот класс в виде view.
@@ -22,5 +22,6 @@ urlpatterns = [
    path('products/search/', SearchProduct.as_view(), name='search'),
    path('products/subscriptions/', subscriptions, name='subscriptions'),
    # path('', IndexView.as_view()),
-   path('tasks/', tasks.MyTasks.as_view(), name='tasks'),
+   # path('tasks/', tasks.MyTasks.as_view(), name='tasks'),
+   # path('', weekly_send_task, name='weekly_email_task')
    ]

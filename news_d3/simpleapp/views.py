@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
+from django.core.cache import cache  # импортируем наш кэш
 from .filters import ProductFilter
 from django.urls import reverse_lazy
 
@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 
 from django.http import HttpResponse
 from django.views import View
-from .tasks import hello, printer
+
 
 
 class ProductsList(ListView):
@@ -54,7 +54,7 @@ class ProductsList(ListView):
         # что и были переданы нам.
         # В ответе мы должны получить словарь.
         context = super().get_context_data(**kwargs)
-        # К словарю добавим текущую дату в ключ 'time_now'.
+        # К словарю добавим текущую дату в ключ 'time_now'
         # context['time_now'] = datetime.utcnow()
         # Добавим ещё одну пустую переменную,
         # чтобы на её примере рассмотреть работу ещё одного фильтра.
@@ -70,6 +70,18 @@ class ProductDetail(DetailView):
     template_name = 'product.html'
     # Название объекта, в котором будет выбранный пользователем продукт
     context_object_name = 'product'
+    queryset = Product.objects.all()
+
+    def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+        obj = cache.get(f'product-{self.kwargs["pk"]}', None)
+        # кэш очень похож на словарь, и метод get действует так же
+        # Он забирает значение по ключу, если его нет, то забирает None.
+
+        # если объекта нет в кэше, то получаем его и записываем в кэш
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'product-{self.kwargs["pk"]}', obj)
+            return obj
 
 
 class ProductCreate(PermissionRequiredMixin, CreateView):
@@ -164,13 +176,3 @@ def subscriptions(request):
         {'categories': categories_with_subscriptions},
     )
 
-
-class IndexView(View):
-    def get(self, request):
-        printer.apply_async([10], eta=datetime.now() + timedelta(seconds=5))
-        hello.delay()
-        # printer.apply_async([10], countdown = 5)
-        # hello.delay()
-        # printer.delay(10)
-        # hello.delay()
-        return HttpResponse('Hello!')

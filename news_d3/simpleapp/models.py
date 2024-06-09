@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.core.cache import cache
 
 
 # Товар для нашей витрины
@@ -31,6 +32,10 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product_detail', args=[str(self.id)])
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'product-{self.pk}')  # затем удаляем его из кэша, чтобы сбросить его
 
 
 # Категория, к которой будет привязываться товар

@@ -12,9 +12,7 @@ def product_created(instance, created, **kwargs):
     if not created:
         return
 
-    emails = User.objects.filter(
-        subscriptions__category=instance.category
-    ).values_list('email', flat=True)
+    emails = User.objects.filter(subscriptions__category=instance.category).values_list('email', flat=True)
 
     subject = f'Новый товар в категории {instance.category}'
 
