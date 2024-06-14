@@ -27,6 +27,11 @@ class Product(models.Model):
 
     date_create_in = models.DateTimeField(auto_now_add=True)
 
+    # допишем свойство, которое будет отображать есть ли товар на складе
+    @property
+    def on_stock(self):
+        return self.quantity > 0
+
     def __str__(self):
         return f'{self.name.title()}: {self.description[:10]}'
 
